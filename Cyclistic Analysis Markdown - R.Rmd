@@ -4,7 +4,7 @@ author: "Dongli Liu"
 date: "`r Sys.Date()`"
 output: html_document
 ---
-<span style="color:red">*To run the scripts: pull  [git](https://github.com/Dongli99/Cyclistic.git), download [data](https://centennialcollegeedu-my.sharepoint.com/:u:/g/personal/dliu99_my_centennialcollege_ca/EebPZIYzXXZAr0xgrzCrjkMBBJ1KGVEqkI1mHfyY7_SEqA?e=YmxcDV), extract the .zip to ./Cyclistic.*<span>
+<span style="color:red">*To replay the scripts: pull  [git](https://github.com/Dongli99/Cyclistic.git), download [data](https://centennialcollegeedu-my.sharepoint.com/:u:/g/personal/dliu99_my_centennialcollege_ca/EebPZIYzXXZAr0xgrzCrjkMBBJ1KGVEqkI1mHfyY7_SEqA?e=YmxcDV), extract tripdata/ to ./Cyclistic.*<span>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -76,7 +76,7 @@ data_path <- "./tripdata"
 csv_files <- list.files(data_path, pattern = "\\.csv", full.names = TRUE)
 ```
 
-2. Checking the col name consistency between multiple tables. <span class="icon" title="Reusable Module">&#9851;</span>
+2. Check the col name consistency between multiple tables. <span class="icon" title="Reusable Module">&#9851;</span>
 ```{r colname_consistency}
 check_column_consistency <- function(csv_files, std_cols) {
   inconsistent <- FALSE
@@ -103,7 +103,19 @@ std_cols <- colnames(read.csv(csv_files[1]))
 check_column_consistency(csv_files, std_cols)
 ```
 
-3. 
+3. combine the .csv files into one tibble
+```{r combine_to_tb}
+tb = tibble() # declare an empty tibble
+for (file in csv_files){ # loop the path to rbind files to tb
+  f <- read.csv(file)
+  tb <- rbind(tb, f)
+  print(paste0(substring(file, 12, 17), " rbinded successfully"))
+  rm(f)
+}
+```
+
+
+
 
 <style>
 .icon {

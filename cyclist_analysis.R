@@ -56,7 +56,6 @@ check_column_consistency <- function(csv_files, std_cols) {
   }
 }
 
-
 # REUSABLE MODULE 2 - Combine multiple tables with same col names into one df.
 # Warning: check the consistency before using this module.
 df <- data.frame() # declare an empty df.
