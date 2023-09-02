@@ -4,26 +4,50 @@ author: "Dongli Liu"
 date: "`r Sys.Date()`"
 output: html_document
 ---
+<span style="color:red">*To run the scripts: pull  [git](https://github.com/Dongli99/Cyclistic.git), download [data](https://centennialcollegeedu-my.sharepoint.com/:u:/g/personal/dliu99_my_centennialcollege_ca/EebPZIYzXXZAr0xgrzCrjkMBBJ1KGVEqkI1mHfyY7_SEqA?e=YmxcDV), extract the .zip to ./Cyclistic.*<span>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Project Overview
+## **Introduction**
 
-This is a case study for Google Data Analytics Certificate.
-The project 
+This project focuses on the completion of the Google Data Analytics Certificate case study. The case study involved real-world data analysis tasks within a fictional company, Cyclistic, a bike-share program operating in Chicago. The goal was to analyze data, answer critical business questions, and make data-driven recommendations to maximize annual memberships.
 
-```{r cars}
-summary(cars)
-```
+### Process:
+The project followed a structured data analysis process:
+
+- ***Ask***: Defined key business questions and objectives.
+- ***Prepare***: Gathered and cleaned the data from various sources.
+- ***Process***: Performed data manipulation and transformation for analysis.
+- ***Analyze***: Conducted in-depth analysis to uncover insights.
+- ***Share***: Communicated findings through visualizations and reports.
+- ***Act***: Presented recommendations based on data insights.
+
+### Tools:
+- ***R Studio***: Main tool to clean, analyze, visualize data.
+- ***Excel***: Prepare data as .csv files.
+- ***Python***: Automating download of multiple .zip files.
+- ***VS Code***: Editing Python file, maintaining files. 
+- ***Git***: Syncing the process to Github.
+- ***ChatGPT***: Answering technical questions quickly.
+- ***Stackoverflow***: Searching technical questions.
+
+## **Ask**
+* ***Business Objective***: Cyclistic aimed to increase annual memberships and understand the differences in bike usage between annual members and casual riders.
+* ***Key Questions***: Three guiding questions drove the analysis:
+  * How do annual members and casual riders use Cyclistic bikes differently?
+  * Why would casual riders buy Cyclistic annual memberships?
+  * How can Cyclistic use digital media to influence casual riders to become members?
+
+## **Prepare**
+### Data source
+The data are from [divvy](https://divvy-tripdata.s3.amazonaws.com/index.html) which are introduced by Coursera and Google. The case study selects the subset of the data.
+
+  - data size: 3.1G
+  - num of columns: 13
+  - num of rows: 17,962,572
+  
+### File management
+
  
-## Data Source
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

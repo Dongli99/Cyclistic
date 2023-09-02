@@ -102,6 +102,9 @@ tb <- tb %>%
   )
 skim_without_charts(tb) # inspect the summary of the tb
 
+# Save tb as .csv file
+write.csv(tb, file = paste0("combined_tripdata.csv"), row.names = FALSE)
+
 # Discovering insights from data.
 # Visualize the difference of duration
 ggplot(tb, aes(x = member_casual, y = as.numeric(ended_at - started_at), fill = member_casual)) +

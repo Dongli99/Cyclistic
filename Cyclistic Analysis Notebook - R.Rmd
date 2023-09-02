@@ -1,9 +1,0 @@
----
-title: "Cyclistic Analysis Notebook - R"
-author: "Dongli Liu"
-date: "`r Sys.Date()`"
-output: html_notebook
----
-
-
-
