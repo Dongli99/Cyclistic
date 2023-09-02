@@ -24,7 +24,6 @@ for (file in csv_files){
       inconsistent <- TRUE
     }
   }
-  print(paste0(substring(file, 12, 17), " checked! ", err_count, " error(s) found."))
 }
 if (!inconsistent){
   print("The colnames are consistent")
@@ -33,6 +32,30 @@ if (!inconsistent){
   print(paste(err_list, collapse = "\n"))
 }
 rm(err_count, err_list, file, i, inconsistent, std_cols, this_cols) # release the memory in this process.
+
+# write a function for checking consistancy.
+check_column_consistency <- function(csv_files, std_cols) {
+  inconsistent <- FALSE
+  err_list <- character(0)
+  for (file in csv_files){
+    this_cols = colnames(read.csv(file))
+    err_count = 0
+    for (i in seq_along(this_cols)){
+      if (this_cols[i] != std_cols[i]){
+        err_list <- c(err_list, paste(file , "-" , this_cols[i]), " should be ", std_cols[i])
+        err_count <- err_count + 1
+        inconsistent <- TRUE
+      }
+    }
+  }
+  if (!inconsistent){
+    print("The colnames are consistent")
+  } else {
+    print("WARNING - inconsistent cols:")
+    print(paste(err_list, collapse = "\n"))
+  }
+}
+
 
 # REUSABLE MODULE 2 - Combine multiple tables with same col names into one df.
 # Warning: check the consistency before using this module.

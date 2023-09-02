@@ -24,6 +24,14 @@ The project followed a structured data analysis process:
 - ***Share***: Communicated findings through visualizations and reports.
 - ***Act***: Presented recommendations based on data insights.
 
+### Principles:
+- ***Reusability***: Creating and collecting reusable modules for future applications.
+- ***Optimization***: Continuously enhancing modules through study and work.
+- ***Structured Organization***: Implementing an organized framework for knowledge and tools.
+- ***Thoroughness***: Trying to cover the whole learning processes in this report.
+- ***Automation***: Streamlining processes through automation, regardless of current complexity.
+- ***Efficiency***: maintaining a clutter-free workspace including the removal of unnecessary objects. 
+
 ### Tools:
 - ***R Studio***: Main tool to clean, analyze, visualize data.
 - ***Excel***: Prepare data as .csv files.
@@ -41,13 +49,70 @@ The project followed a structured data analysis process:
   * How can Cyclistic use digital media to influence casual riders to become members?
 
 ## **Prepare**
-### Data source
-The data are from [divvy](https://divvy-tripdata.s3.amazonaws.com/index.html) which are introduced by Coursera and Google. The case study selects the subset of the data.
+### Data Source
+The data are downloaded from [divvy](https://divvy-tripdata.s3.amazonaws.com/index.html) which is introduced by Coursera and Google. 
+To download multiple files automatically, the [mutidownloader Python app](https://github.com/Dongli99/MultiDownloader.git) <span class="icon" title="Reusable Module">&#9851;</span> was developed under the assistant of ChatGPT.
+The case study selects the subset of the data (2020Q1-202307).
+
+> Data Overview
 
   - data size: 3.1G
+  - num of files: 41
   - num of columns: 13
   - num of rows: 17,962,572
-  
-### File management
 
+### Enviorment Prepare
+```{r env_prepare, echo=TRUE}
+options(repos = "https://mirror.rcg.sfu.ca/mirror/CRAN/")
+install.packages("tidyverse")
+library(tidyverse)
+library(skimr)
+```
+
+### Data Importing
+1. Set data path and list all the .csv files.
+```{r importing}
+data_path <- "./tripdata"
+csv_files <- list.files(data_path, pattern = "\\.csv", full.names = TRUE)
+```
+
+2. Checking the col name consistency between multiple tables. <span class="icon" title="Reusable Module">&#9851;</span>
+```{r colname_consistency}
+check_column_consistency <- function(csv_files, std_cols) {
+  inconsistent <- FALSE
+  err_list <- character(0)
+  for (file in csv_files){
+    this_cols = colnames(read.csv(file))
+    err_count = 0
+    for (i in seq_along(this_cols)){
+      if (this_cols[i] != std_cols[i]){
+        err_list <- c(err_list, paste(file , "-" , this_cols[i]), " should be ", std_cols[i])
+        err_count <- err_count + 1
+        inconsistent <- TRUE
+      }
+    }
+  }
+  if (!inconsistent){
+    print("The colnames are consistent")
+  } else {
+    print("WARNING - inconsistent cols:")
+    print(paste(err_list, collapse = "\n"))
+  }
+}
+std_cols <- colnames(read.csv(csv_files[1])) 
+check_column_consistency(csv_files, std_cols)
+```
+
+3. 
+
+<style>
+.icon {
+  color: green;
+  cursor: pointer;
+}
+
+.icon:hover::before {
+  opacity: 1;
+}
+</style>
  

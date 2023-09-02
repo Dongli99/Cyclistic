@@ -11,7 +11,7 @@
 
 <meta name="author" content="Dongli Liu" />
 
-<meta name="date" content="2023-09-01" />
+<meta name="date" content="2023-09-02" />
 
 <title>Cyclistic Analysis Markdown - R</title>
 
@@ -352,7 +352,7 @@ display: none;
 
 <h1 class="title toc-ignore">Cyclistic Analysis Markdown - R</h1>
 <h4 class="author">Dongli Liu</h4>
-<h4 class="date">2023-09-01</h4>
+<h4 class="date">2023-09-02</h4>
 
 </div>
 
@@ -383,6 +383,23 @@ uncover insights.</li>
 visualizations and reports.</li>
 <li><strong><em>Act</em></strong>: Presented recommendations based on
 data insights.</li>
+</ul>
+</div>
+<div id="principles" class="section level3">
+<h3>Principles:</h3>
+<ul>
+<li><strong><em>Reusability</em></strong>: Creating and collecting
+reusable modules for future applications.</li>
+<li><strong><em>Optimization</em></strong>: Continuously enhancing
+modules through study and work.</li>
+<li><strong><em>Structured Organization</em></strong>: Implementing an
+organized framework for knowledge and tools.</li>
+<li><strong><em>Thoroughness</em></strong>: Trying to cover the whole
+learning processes in this report.</li>
+<li><strong><em>Automation</em></strong>: Streamlining processes through
+automation, regardless of current complexity.</li>
+<li><strong><em>Efficiency</em></strong>: maintaining a clutter-free
+workspace including the removal of unnecessary objects.</li>
 </ul>
 </div>
 <div id="tools" class="section level3">
@@ -423,16 +440,90 @@ become members?</li>
 <div id="prepare" class="section level2">
 <h2><strong>Prepare</strong></h2>
 <div id="data-source" class="section level3">
-<h3>Data source</h3>
-<p>The data are from <a href="https://divvy-tripdata.s3.amazonaws.com/index.html">divvy</a>
-which are introduced by Coursera and Google. The case study selects the
-subset of the data.</p>
+<h3>Data Source</h3>
+<p>The data are downloaded from <a href="https://divvy-tripdata.s3.amazonaws.com/index.html">divvy</a>
+which is introduced by Coursera and Google. To download multiple files
+automatically, the <a href="https://github.com/Dongli99/MultiDownloader.git">mutidownloader
+Python app</a> <span class="icon" title="Reusable Module">♻</span> was
+developed under the assistant of ChatGPT. The case study selects the
+subset of the data (2020Q1-202307).</p>
+<blockquote>
+<p>Data Overview</p>
+</blockquote>
 <ul>
 <li>data size: 3.1G</li>
+<li>num of files: 41</li>
 <li>num of columns: 13</li>
 <li>num of rows: 17,962,572</li>
 </ul>
-<p>### File management</p>
+</div>
+<div id="enviorment-prepare" class="section level3">
+<h3>Enviorment Prepare</h3>
+<pre class="r"><code>options(repos = &quot;https://mirror.rcg.sfu.ca/mirror/CRAN/&quot;)
+install.packages(&quot;tidyverse&quot;)</code></pre>
+<pre><code>## package &#39;tidyverse&#39; successfully unpacked and MD5 sums checked
+## 
+## The downloaded binary packages are in
+##  C:\Users\Dongli\AppData\Local\Temp\RtmpsPW92G\downloaded_packages</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.2     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+## ✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.1     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<pre class="r"><code>library(skimr)</code></pre>
+</div>
+<div id="data-importing" class="section level3">
+<h3>Data Importing</h3>
+<ol style="list-style-type: decimal">
+<li>Set data path and list all the .csv files.</li>
+</ol>
+<pre class="r"><code>data_path &lt;- &quot;./tripdata&quot;
+csv_files &lt;- list.files(data_path, pattern = &quot;\\.csv&quot;, full.names = TRUE)</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Checking the col name consistency between multiple tables. <span class="icon" title="Reusable Module">♻</span></li>
+</ol>
+<pre class="r"><code>check_column_consistency &lt;- function(csv_files, std_cols) {
+  inconsistent &lt;- FALSE
+  err_list &lt;- character(0)
+  for (file in csv_files){
+    this_cols = colnames(read.csv(file))
+    err_count = 0
+    for (i in seq_along(this_cols)){
+      if (this_cols[i] != std_cols[i]){
+        err_list &lt;- c(err_list, paste(file , &quot;-&quot; , this_cols[i]), &quot; should be &quot;, std_cols[i])
+        err_count &lt;- err_count + 1
+        inconsistent &lt;- TRUE
+      }
+    }
+  }
+  if (!inconsistent){
+    print(&quot;The colnames are consistent&quot;)
+  } else {
+    print(&quot;WARNING - inconsistent cols:&quot;)
+    print(paste(err_list, collapse = &quot;\n&quot;))
+  }
+}
+std_cols &lt;- colnames(read.csv(csv_files[1])) 
+check_column_consistency(csv_files, std_cols)</code></pre>
+<pre><code>## [1] &quot;The colnames are consistent&quot;</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li></li>
+</ol>
+<style>
+.icon {
+color: green;
+cursor: pointer;
+}
+.icon:hover::before {
+opacity: 1;
+}
+</style>
 </div>
 </div>
 
