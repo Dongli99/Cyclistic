@@ -161,11 +161,40 @@ tb <- tb %>%
 # less than 1% data lost after deleting
 ```
 
-#### Inspect Correctness of Stations
-```{r inspect_stations}
+#### Inspect Data Quality of Stations
+```{r inspect_station_id_name}
 station_list <- tb %>% 
-  group_by(start_station_id) %>% 
-  filter(n(start_station_name)>1)
+  select(start_station_id, start_station_name) %>%
+  group_by(start_station_id, start_station_name) %>% 
+  summarize(n = n(), .groups = 'drop') %>% 
+  arrange(start_station_name)
+```
+
+- 10% (2015929) rows have empty station id & name. 
+- For better accuracy, seeking probability of using lng & lat as station.
+
+```{r inspect_lat_lng}
+lat_lng_list <- tb %>% 
+  mutate(
+    start_lat = round(start_lat, digits = 3),
+    start_lng = round(start_lng, digits = 3),
+    end_lat = round(end_lat, digits = 3),
+    end_lng = round(end_lng, digits = 3)
+  ) %>% 
+  select(start_lat, start_lng) %>%
+  group_by(start_lat, start_lng) %>% 
+  summarize(n = n(), .groups = 'drop') %>% 
+  arrange(start_lat)
+```
+
+- lat and lng are not accuracy enough
+- Decide to use station name, check the distribution of empty name.
+
+```{r check_empty_name}
+empty_names <- tb %>% 
+  filter(as.charactor(start_station_name)=="" | as.charactor())
+ggplot(data = empty_names, aes(x=started_at, y=))+
+  geom_bar()
 ```
 
 
