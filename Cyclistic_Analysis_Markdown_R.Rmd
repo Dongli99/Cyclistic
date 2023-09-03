@@ -1,10 +1,10 @@
 ---
-title: "Cyclistic Analysis Markdown - R"
+title: "Cyclistic Analysis Workflow Using R"
 author: "Dongli Liu"
 date: "`r Sys.Date()`"
 output: html_document
 ---
-<span style="color:red">*To recurrent: pull  [repository](https://github.com/Dongli99/Cyclistic.git), download [data](https://centennialcollegeedu-my.sharepoint.com/:u:/g/personal/dliu99_my_centennialcollege_ca/EebPZIYzXXZAr0xgrzCrjkMBBJ1KGVEqkI1mHfyY7_SEqA?e=YmxcDV), extract tripdata/ to Cyclistic/.*<span>
+<span style="color:red">*To recurrent: pull  [repository](https://github.com/Dongli99/Cyclistic.git), download [data](https://centennialcollegeedu-my.sharepoint.com/:u:/g/personal/dliu99_my_centennialcollege_ca/EebPZIYzXXZAr0xgrzCrjkMBBJ1KGVEqkI1mHfyY7_SEqA?e=YmxcDV), extract tripdata/ to Cyclistic/, and open Cyclistic_Analysis_Markdown_R.Rmd in RStudio. Expect long-time running due to large dataset. Enjoy!*<span>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -162,6 +162,9 @@ tb <- tb %>%
 ```
 
 #### Inspect Data Quality of Stations
+- station_id, station_name, and lat&lng are three interchangeable geographic metrics
+- This task is choose and optimize one geographic data for future analysis
+
 ```{r inspect_station_id_name}
 station_list <- tb %>% 
   select(start_station_id, start_station_name) %>%
@@ -192,10 +195,19 @@ lat_lng_list <- tb %>%
 
 ```{r check_empty_name}
 empty_names <- tb %>% 
-  filter(as.charactor(start_station_name)=="" | as.charactor())
-ggplot(data = empty_names, aes(x=started_at, y=))+
-  geom_bar()
+  mutate(
+    started_at = format(ymd_hms(started_at), "%Y-%m"),
+    empty_name = ifelse(start_station_name=="" | end_station_name=="", "Empty", "Not empty")
+  )
+ggplot(data = empty_names)+
+  geom_bar(
+    mapping = aes(x = started_at), 
+    fill(empty_name)
+    )+
+  theme(axis.text.x = element_text(angle = 45))+
+  theme_minimal()
 ```
+
 
 
 
