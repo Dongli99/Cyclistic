@@ -198,17 +198,23 @@ lat_lng_list <- tb %>%
 - Decide to use station name, check the distribution of empty name.
 
 ```{r check_empty_name}
-empty_names <- tb %>% 
+empty_value_monthly <- function(tb, date_col, col_to_check1, col_to_check2){
+  empty_list <- tb %>% 
   mutate(
-    started_at = format(ymd_hms(started_at), "%Y-%m"),
-    empty_name = ifelse(start_station_name=="" | end_station_name=="", "Empty", "Not empty")
+    months = format(ymd_hms(.data[[date_col]]), "%Y-%m"),
+    is_empty = ifelse(
+      .data[[col_to_check1]]=="" | .data[[col_to_check2]]=="", 
+      "Empty", 
+      "Not empty"
+      )
   )
-ggplot(data = empty_names)+
-  geom_bar(
-    mapping = aes(x = started_at, fill = empty_name), 
-    )+
-  theme(axis.text.x = element_text(angle = 45))+
-  theme_minimal()
+  ggplot(data = empty_list)+
+    geom_bar(mapping = aes(x = months, fill = is_empty))+
+    theme_minimal()+
+    theme(axis.text.x = element_text(angle = 45, size = 8))+
+    scale_x_discrete(breaks = unique(empty_list$months)[c(TRUE, FALSE)])
+}
+empty_value_monthly(tb, "started_at", "start_station_name", "end_station_name")
 ```
 
 
