@@ -58,7 +58,7 @@ The case study selects the subset of the data (2020Q1-202307).
 
 > Data Overview
 
-  - data size: 3.1G
+  - data size: 3.3G
   - num of files: 41
   - num of columns: 13
   - num of rows: 17,962,572
@@ -77,7 +77,7 @@ csv_files <- list.files(data_path, pattern = "\\.csv", full.names = TRUE)
 ```
 
 #### Check the col name consistency between multiple tables. <span class="icon" title="Reusable Module">&#9851;</span>
-```{r colname_consistency}
+```{r colname_consistency, class.source = "reusable_module"}
 check_column_consistency <- function(csv_files, std_cols) {
   inconsistent <- FALSE
   err_list <- character(0)
@@ -104,7 +104,7 @@ check_column_consistency(csv_files, std_cols)
 ```
 
 #### Combine the .csv files into one tibble
-```{r combine_to_tb}
+```{r combine_to_tb, class.source = "reusable_module"}
 combine_csvs_to_tibble <- function(csv_files){
   tb = tibble() # declare an empty tibble
   for (file in csv_files){ # loop the path to rbind files to tb
@@ -125,9 +125,7 @@ skim_without_charts(tb)
 ### Transform Data Format
 
 #### Date Converting function <span class="icon" title="Reusable Module">&#9851;</span>
-  *Traditional way will miss at least 50% values due to the variety of date formats.*
-  *The solution was inspired by [r2evans](https://stackoverflow.com/questions/70304425/r-datetime-series-missing-values)*
-```{r convert_datetime}
+```{r convert_datetime, class.source = "reusable_module"}
 convert_datetime <- function(column) {
   candidates <- c("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M", "%d/%m/%Y %H:%M:%S", "%m/%d/%Y %H:%M:%S")
   out <- as.POSIXct(column, format = candidates[1])
@@ -138,6 +136,9 @@ convert_datetime <- function(column) {
   return(out)
 }
 ```
+
+- Traditional way will miss at least 50% values due to the variety of date formats.
+- The solution was inspired by [r2evans](https://stackoverflow.com/questions/70304425/r-datetime-series-missing-values)
 
 #### Mutate Data Types
 ```{r mutate_data_type}
@@ -173,10 +174,6 @@ station_list <- tb %>%
   arrange(start_station_name)
 ```
 
-```{r clear_station_list, include=False}
-rm(station_list)
-```
-
 - 10% (2015929) rows have empty station id & name. 
 - For better accuracy, seeking probability of using lng & lat as station.
 
@@ -197,7 +194,7 @@ lat_lng_list <- tb %>%
 - lat and lng are not accuracy enough
 - Decide to use station name, check the distribution of empty name.
 
-```{r check_empty_name}
+```{r check_empty_name, class.source = "reusable_module"}
 empty_value_monthly <- function(tb, date_col, col_to_check1, col_to_check2){
   empty_list <- tb %>% 
   mutate(
@@ -218,18 +215,17 @@ empty_value_monthly(tb, "started_at", "start_station_name", "end_station_name")
 ```
 
 
+
 <style>
 .icon {
   color: green;
   cursor: pointer;
 }
-
 .icon:hover::before {
   opacity: 1;
-}
-
-.reuse {
-backgroud_color: 
+}  
+.reusable_module {
+  background-color: lightgreen;
 }
 </style>
  
