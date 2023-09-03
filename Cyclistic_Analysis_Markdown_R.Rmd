@@ -173,6 +173,10 @@ station_list <- tb %>%
   arrange(start_station_name)
 ```
 
+```{r clear_station_list, include=False}
+rm(station_list)
+```
+
 - 10% (2015929) rows have empty station id & name. 
 - For better accuracy, seeking probability of using lng & lat as station.
 
@@ -201,14 +205,11 @@ empty_names <- tb %>%
   )
 ggplot(data = empty_names)+
   geom_bar(
-    mapping = aes(x = started_at), 
-    fill(empty_name)
+    mapping = aes(x = started_at, fill = empty_name), 
     )+
   theme(axis.text.x = element_text(angle = 45))+
   theme_minimal()
 ```
-
-
 
 
 <style>
@@ -219,6 +220,10 @@ ggplot(data = empty_names)+
 
 .icon:hover::before {
   opacity: 1;
+}
+
+.reuse {
+backgroud_color: 
 }
 </style>
  
