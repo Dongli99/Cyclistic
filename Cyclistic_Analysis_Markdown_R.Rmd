@@ -154,6 +154,19 @@ tb <- tb %>%
   )
 ```
 
+#### Trim Incomplete Observations
+```{r delete_incomplete}
+tb <- tb %>% 
+  filter(!is.na(start_station_id) & !is.na(end_station_id) & !is.na(end_lat) & !is.na(end_lng))
+# less than 1% data lost after deleting
+```
+
+#### Inspect Correctness of Stations
+```{r inspect_stations}
+station_list <- tb %>% 
+  group_by(start_station_id) %>% 
+  filter(n(start_station_name)>1)
+```
 
 
 
