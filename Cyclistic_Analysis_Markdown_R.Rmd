@@ -4,13 +4,14 @@ author: "Dongli Liu"
 date: "`r Sys.Date()`"
 output: html_document
 ---
-<span style="color:red">*To replay the scripts: pull  [git](https://github.com/Dongli99/Cyclistic.git), download [data](https://centennialcollegeedu-my.sharepoint.com/:u:/g/personal/dliu99_my_centennialcollege_ca/EebPZIYzXXZAr0xgrzCrjkMBBJ1KGVEqkI1mHfyY7_SEqA?e=YmxcDV), extract tripdata/ to ./Cyclistic.*<span>
+<span style="color:red">*To recurrent: pull  [repository](https://github.com/Dongli99/Cyclistic.git), download [data](https://centennialcollegeedu-my.sharepoint.com/:u:/g/personal/dliu99_my_centennialcollege_ca/EebPZIYzXXZAr0xgrzCrjkMBBJ1KGVEqkI1mHfyY7_SEqA?e=YmxcDV), extract tripdata/ to Cyclistic/.*<span>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+options(repos = "https://mirror.rcg.sfu.ca/mirror/CRAN/")
 ```
 
-## **Introduction**
+## INTRODUCTION
 
 This project focuses on the completion of the Google Data Analytics Certificate case study. The case study involved real-world data analysis tasks within a fictional company, Cyclistic, a bike-share program operating in Chicago. The goal was to analyze data, answer critical business questions, and make data-driven recommendations to maximize annual memberships.
 
@@ -41,14 +42,15 @@ The project followed a structured data analysis process:
 - ***ChatGPT***: Answering technical questions quickly.
 - ***Stackoverflow***: Searching technical questions.
 
-## **Ask**
+## ASK
 * ***Business Objective***: Cyclistic aimed to increase annual memberships and understand the differences in bike usage between annual members and casual riders.
 * ***Key Questions***: Three guiding questions drove the analysis:
   * How do annual members and casual riders use Cyclistic bikes differently?
   * Why would casual riders buy Cyclistic annual memberships?
   * How can Cyclistic use digital media to influence casual riders to become members?
 
-## **Prepare**
+## PREPARE
+
 ### Data Source
 The data are downloaded from [divvy](https://divvy-tripdata.s3.amazonaws.com/index.html) which is introduced by Coursera and Google. 
 To download multiple files automatically, the [mutidownloader Python app](https://github.com/Dongli99/MultiDownloader.git) <span class="icon" title="Reusable Module">&#9851;</span> was developed under the assistant of ChatGPT.
@@ -62,21 +64,19 @@ The case study selects the subset of the data (2020Q1-202307).
   - num of rows: 17,962,572
 
 ### Enviorment Prepare
-```{r env_prepare, echo=TRUE}
-options(repos = "https://mirror.rcg.sfu.ca/mirror/CRAN/")
+```{r env_prepare}
 install.packages("tidyverse")
 library(tidyverse)
-library(skimr)
 ```
 
-### Data Importing
-1. Set data path and list all the .csv files.
+### Data Prepare
+#### Set data path and list all the .csv files.
 ```{r importing}
 data_path <- "./tripdata"
 csv_files <- list.files(data_path, pattern = "\\.csv", full.names = TRUE)
 ```
 
-2. Check the col name consistency between multiple tables. <span class="icon" title="Reusable Module">&#9851;</span>
+#### Check the col name consistency between multiple tables. <span class="icon" title="Reusable Module">&#9851;</span>
 ```{r colname_consistency}
 check_column_consistency <- function(csv_files, std_cols) {
   inconsistent <- FALSE
@@ -103,15 +103,55 @@ std_cols <- colnames(read.csv(csv_files[1]))
 check_column_consistency(csv_files, std_cols)
 ```
 
-3. combine the .csv files into one tibble
+#### Combine the .csv files into one tibble
 ```{r combine_to_tb}
-tb = tibble() # declare an empty tibble
-for (file in csv_files){ # loop the path to rbind files to tb
-  f <- read.csv(file)
-  tb <- rbind(tb, f)
-  print(paste0(substring(file, 12, 17), " rbinded successfully"))
-  rm(f)
+combine_csvs_to_tibble <- function(csv_files){
+  tb = tibble() # declare an empty tibble
+  for (file in csv_files){ # loop the path to rbind files to tb
+    f <- read.csv(file)
+    tb <- rbind(tb, f)
+  }
+  return(tb)
 }
+tb <- combine_csvs_to_tibble(csv_files)
+```
+
+## PROCESS
+### Inspect data
+```{r inspect_tb}
+library(skimr)
+skim_without_charts(tb)
+```
+### Transform Data Format
+
+#### Date Converting function <span class="icon" title="Reusable Module">&#9851;</span>
+  *Traditional way will miss at least 50% values due to the variety of date formats.*
+  *The solution was inspired by [r2evans](https://stackoverflow.com/questions/70304425/r-datetime-series-missing-values)*
+```{r convert_datetime}
+convert_datetime <- function(column) {
+  candidates <- c("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M", "%d/%m/%Y %H:%M:%S", "%m/%d/%Y %H:%M:%S")
+  out <- as.POSIXct(column, format = candidates[1])
+  for (fmt in candidates[-1]) {
+    if (!any(is.na(out))) break
+    out[is.na(out)] <- as.POSIXct(column[is.na(out)], format = fmt)
+  }
+  return(out)
+}
+```
+
+#### Mutate Data Types
+```{r mutate_data_type}
+tb <- tb %>% 
+  mutate(
+    start_station_id = as.factor(start_station_id),
+    end_station_id = as.factor(end_station_id),
+    start_station_name = as.factor(start_station_name),
+    end_station_name = as.factor(end_station_name),
+    rideable_type = as.factor(rideable_type),
+    member_casual = as.factor(member_casual),
+    ended_at = convert_datetime(ended_at),
+    started_at = convert_datetime(started_at)
+  )
 ```
 
 

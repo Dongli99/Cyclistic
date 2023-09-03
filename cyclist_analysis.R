@@ -56,18 +56,6 @@ check_column_consistency <- function(csv_files, std_cols) {
   }
 }
 
-# REUSABLE MODULE 2 - Combine multiple tables with same col names into one df.
-# Warning: check the consistency before using this module.
-df <- data.frame() # declare an empty df.
-for (file in csv_files){ # iterate the data list, add data to df
-  data <- read.csv(file)
-  df <- rbind(df, data)
-  print(paste0(substring(file, 12, 17), " rbinded."))
-}
-print(paste0("Done! ", length(csv_files), " files combined."))
-df <- as_tibble(df) # convert df into tibble
-rm(file, data)
-
 # REUSABLE MODULE 3 - View data, choose any of the below.
 head(df) # Data type issues detected.
 colnames(df)
@@ -80,20 +68,7 @@ skim_without_charts(df)
 # The previous way gives a 50% missing in started_at and ended_at
 # trying another way to rbind the files.
 tb = tibble( # declare an empty tibble
-  ride_id = character(0),
-  rideable_type = factor(),
-  started_at = lubridate::ymd_hms(character()),
-  ended_at = lubridate::ymd_hms(character()),
-  start_station_name = factor(),
-  start_station_id = factor(),
-  end_station_name = factor(),
-  end_station_id = factor(),
-  start_lat = double(0),
-  start_lng = double(0),
-  end_lat = double(0),
-  end_lng = double(0),
-  member_casual = factor()
-)
+  )
 for (file in csv_files){ # loop the path to rbind files to tb
   f <- read.csv(file)
   tb <- rbind(tb, f)

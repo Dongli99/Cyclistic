@@ -357,8 +357,11 @@ display: none;
 </div>
 
 
-<p><span style="color:red"><em>To run the scripts: pull <a href="https://github.com/Dongli99/Cyclistic.git">git</a>, download <a href="https://centennialcollegeedu-my.sharepoint.com/:u:/g/personal/dliu99_my_centennialcollege_ca/EebPZIYzXXZAr0xgrzCrjkMBBJ1KGVEqkI1mHfyY7_SEqA?e=YmxcDV">data</a>,
-extract the .zip to ./Cyclistic.</em><span></p>
+<p><span style="color:red"><em>To replay the scripts: pull <a href="https://github.com/Dongli99/Cyclistic.git">git</a>, download <a href="https://centennialcollegeedu-my.sharepoint.com/:u:/g/personal/dliu99_my_centennialcollege_ca/EebPZIYzXXZAr0xgrzCrjkMBBJ1KGVEqkI1mHfyY7_SEqA?e=YmxcDV">data</a>,
+extract tripdata/ to Cyclistic/. Execution may take long due to large
+dataset. To run chunck by chunk, open Cyclistic_Analysis_Markdown_R.Rmd;
+to display result directly, open
+Cyclistic_Analysis_Markdown_R.html</em><span></p>
 <div id="introduction" class="section level2">
 <h2><strong>Introduction</strong></h2>
 <p>This project focuses on the completion of the Google Data Analytics
@@ -459,12 +462,11 @@ subset of the data (2020Q1-202307).</p>
 </div>
 <div id="enviorment-prepare" class="section level3">
 <h3>Enviorment Prepare</h3>
-<pre class="r"><code>options(repos = &quot;https://mirror.rcg.sfu.ca/mirror/CRAN/&quot;)
-install.packages(&quot;tidyverse&quot;)</code></pre>
+<pre class="r"><code>install.packages(&quot;tidyverse&quot;)</code></pre>
 <pre><code>## package &#39;tidyverse&#39; successfully unpacked and MD5 sums checked
 ## 
 ## The downloaded binary packages are in
-##  C:\Users\Dongli\AppData\Local\Temp\RtmpsPW92G\downloaded_packages</code></pre>
+##  C:\Users\Dongli\AppData\Local\Temp\RtmpAF3mGr\downloaded_packages</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ## ✔ dplyr     1.1.2     ✔ readr     2.1.4
@@ -476,7 +478,6 @@ install.packages(&quot;tidyverse&quot;)</code></pre>
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
 ## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-<pre class="r"><code>library(skimr)</code></pre>
 </div>
 <div id="data-importing" class="section level3">
 <h3>Data Importing</h3>
@@ -486,7 +487,7 @@ install.packages(&quot;tidyverse&quot;)</code></pre>
 <pre class="r"><code>data_path &lt;- &quot;./tripdata&quot;
 csv_files &lt;- list.files(data_path, pattern = &quot;\\.csv&quot;, full.names = TRUE)</code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li>Checking the col name consistency between multiple tables. <span class="icon" title="Reusable Module">♻</span></li>
+<li>Check the col name consistency between multiple tables. <span class="icon" title="Reusable Module">♻</span></li>
 </ol>
 <pre class="r"><code>check_column_consistency &lt;- function(csv_files, std_cols) {
   inconsistent &lt;- FALSE
@@ -513,6 +514,296 @@ std_cols &lt;- colnames(read.csv(csv_files[1]))
 check_column_consistency(csv_files, std_cols)</code></pre>
 <pre><code>## [1] &quot;The colnames are consistent&quot;</code></pre>
 <ol start="3" style="list-style-type: decimal">
+<li>combine the .csv files into one tibble</li>
+</ol>
+<pre><code>## [1] &quot;202003 rbinded successfully&quot;
+## [1] &quot;202004 rbinded successfully&quot;
+## [1] &quot;202005 rbinded successfully&quot;
+## [1] &quot;202006 rbinded successfully&quot;
+## [1] &quot;202007 rbinded successfully&quot;
+## [1] &quot;202008 rbinded successfully&quot;
+## [1] &quot;202009 rbinded successfully&quot;
+## [1] &quot;202010 rbinded successfully&quot;
+## [1] &quot;202011 rbinded successfully&quot;
+## [1] &quot;202012 rbinded successfully&quot;
+## [1] &quot;202101 rbinded successfully&quot;
+## [1] &quot;202102 rbinded successfully&quot;
+## [1] &quot;202103 rbinded successfully&quot;
+## [1] &quot;202104 rbinded successfully&quot;
+## [1] &quot;202105 rbinded successfully&quot;
+## [1] &quot;202106 rbinded successfully&quot;
+## [1] &quot;202107 rbinded successfully&quot;
+## [1] &quot;202108 rbinded successfully&quot;
+## [1] &quot;202109 rbinded successfully&quot;
+## [1] &quot;202110 rbinded successfully&quot;
+## [1] &quot;202111 rbinded successfully&quot;
+## [1] &quot;202112 rbinded successfully&quot;
+## [1] &quot;202201 rbinded successfully&quot;
+## [1] &quot;202202 rbinded successfully&quot;
+## [1] &quot;202203 rbinded successfully&quot;
+## [1] &quot;202204 rbinded successfully&quot;
+## [1] &quot;202205 rbinded successfully&quot;
+## [1] &quot;202206 rbinded successfully&quot;
+## [1] &quot;202207 rbinded successfully&quot;
+## [1] &quot;202208 rbinded successfully&quot;
+## [1] &quot;202209 rbinded successfully&quot;
+## [1] &quot;202210 rbinded successfully&quot;
+## [1] &quot;202211 rbinded successfully&quot;
+## [1] &quot;202212 rbinded successfully&quot;
+## [1] &quot;202301 rbinded successfully&quot;
+## [1] &quot;202302 rbinded successfully&quot;
+## [1] &quot;202303 rbinded successfully&quot;
+## [1] &quot;202304 rbinded successfully&quot;
+## [1] &quot;202305 rbinded successfully&quot;
+## [1] &quot;202306 rbinded successfully&quot;
+## [1] &quot;202307 rbinded successfully&quot;</code></pre>
+</div>
+</div>
+<div id="process-1" class="section level2">
+<h2>PROCESS</h2>
+<ol style="list-style-type: decimal">
+<li>Inspect the data</li>
+</ol>
+<pre class="r"><code>library(skimr)
+skim_without_charts(tb)</code></pre>
+<table>
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">tb</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">17962572</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">13</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">9</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">4</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table style="width:100%;">
+<colgroup>
+<col width="24%" />
+<col width="12%" />
+<col width="17%" />
+<col width="5%" />
+<col width="5%" />
+<col width="10%" />
+<col width="11%" />
+<col width="13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ride_id</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">8</td>
+<td align="right">16</td>
+<td align="right">0</td>
+<td align="right">17962352</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">rideable_type</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">11</td>
+<td align="right">13</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">started_at</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">15</td>
+<td align="right">19</td>
+<td align="right">0</td>
+<td align="right">14507283</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">ended_at</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">15</td>
+<td align="right">19</td>
+<td align="right">0</td>
+<td align="right">14513167</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">start_station_name</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0</td>
+<td align="right">64</td>
+<td align="right">2098889</td>
+<td align="right">2002</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">start_station_id</td>
+<td align="right">83583</td>
+<td align="right">1.00</td>
+<td align="right">0</td>
+<td align="right">44</td>
+<td align="right">2016061</td>
+<td align="right">1858</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">end_station_name</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0</td>
+<td align="right">64</td>
+<td align="right">2254060</td>
+<td align="right">2018</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">end_station_id</td>
+<td align="right">98105</td>
+<td align="right">0.99</td>
+<td align="right">0</td>
+<td align="right">44</td>
+<td align="right">2156557</td>
+<td align="right">1860</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">member_casual</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">6</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="right">2</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table style="width:100%;">
+<colgroup>
+<col width="16%" />
+<col width="11%" />
+<col width="16%" />
+<col width="8%" />
+<col width="5%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">start_lat</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">41.90</td>
+<td align="right">0.05</td>
+<td align="right">41.64</td>
+<td align="right">41.88</td>
+<td align="right">41.90</td>
+<td align="right">41.93</td>
+<td align="right">45.64</td>
+</tr>
+<tr class="even">
+<td align="left">start_lng</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">-87.65</td>
+<td align="right">0.03</td>
+<td align="right">-87.92</td>
+<td align="right">-87.66</td>
+<td align="right">-87.64</td>
+<td align="right">-87.63</td>
+<td align="right">-73.80</td>
+</tr>
+<tr class="odd">
+<td align="left">end_lat</td>
+<td align="right">18598</td>
+<td align="right">1</td>
+<td align="right">41.90</td>
+<td align="right">0.06</td>
+<td align="right">0.00</td>
+<td align="right">41.88</td>
+<td align="right">41.90</td>
+<td align="right">41.93</td>
+<td align="right">42.37</td>
+</tr>
+<tr class="even">
+<td align="left">end_lng</td>
+<td align="right">18598</td>
+<td align="right">1</td>
+<td align="right">-87.65</td>
+<td align="right">0.07</td>
+<td align="right">-88.97</td>
+<td align="right">-87.66</td>
+<td align="right">-87.64</td>
+<td align="right">-87.63</td>
+<td align="right">0.00</td>
+</tr>
+</tbody>
+</table>
+<ol start="2" style="list-style-type: decimal">
 <li></li>
 </ol>
 <style>
@@ -524,7 +815,6 @@ cursor: pointer;
 opacity: 1;
 }
 </style>
-</div>
 </div>
 
 
