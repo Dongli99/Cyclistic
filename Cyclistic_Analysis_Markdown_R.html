@@ -357,21 +357,39 @@ display: none;
 </div>
 
 
-<p><span style="color:red"><em>To recurrent: pull <a href="https://github.com/Dongli99/Cyclistic.git">repository</a>,
-download <a href="https://centennialcollegeedu-my.sharepoint.com/:u:/g/personal/dliu99_my_centennialcollege_ca/EebPZIYzXXZAr0xgrzCrjkMBBJ1KGVEqkI1mHfyY7_SEqA?e=YmxcDV">data</a>,
-extract tripdata/ to Cyclistic/, and open
-Cyclistic_Analysis_Markdown_R.Rmd in RStudio. Expect long-time running
-due to large dataset. Enjoy!</em><span></p>
-<div id="introduction" class="section level2">
-<h2>INTRODUCTION</h2>
+<div id="introduction" class="section level2 tabset">
+<h2 class="tabset">INTRODUCTION</h2>
+<div id="usage" class="section level3">
+<h3>Usage</h3>
+<blockquote>
+<p>To recurrent:</p>
+</blockquote>
+<ul>
+<li>pull <a href="https://github.com/Dongli99/Cyclistic.git">repository</a></li>
+<li>download <a href="https://centennialcollegeedu-my.sharepoint.com/:u:/g/personal/dliu99_my_centennialcollege_ca/EebPZIYzXXZAr0xgrzCrjkMBBJ1KGVEqkI1mHfyY7_SEqA?e=YmxcDV">dataset</a></li>
+<li>extract tripdata/ to Cyclistic/</li>
+<li>run Cyclistic_Analysis_Markdown_R.Rmd in RStudio</li>
+<li>expect long-time running due to large dataset.</li>
+</ul>
+<blockquote>
+<p>How to use</p>
+</blockquote>
+<pre class="normal_modules"><code>Normal code chunk.</code></pre>
+<pre class="reusable_module"><code>Reusable code chunk.</code></pre>
+<hr />
+</div>
+<div id="overview" class="section level3">
+<h3>Overview</h3>
 <p>This project focuses on the completion of the Google Data Analytics
 Certificate case study. The case study involved real-world data analysis
 tasks within a fictional company, Cyclistic, a bike-share program
 operating in Chicago. The goal was to analyze data, answer critical
 business questions, and make data-driven recommendations to maximize
 annual memberships.</p>
+<hr />
+</div>
 <div id="process" class="section level3">
-<h3>Process:</h3>
+<h3>Process</h3>
 <p>The project followed a structured data analysis process:</p>
 <ul>
 <li><strong><em>Ask</em></strong>: Defined key business questions and
@@ -387,9 +405,10 @@ visualizations and reports.</li>
 <li><strong><em>Act</em></strong>: Presented recommendations based on
 data insights.</li>
 </ul>
+<hr />
 </div>
 <div id="principles" class="section level3">
-<h3>Principles:</h3>
+<h3>Principles</h3>
 <ul>
 <li><strong><em>Reusability</em></strong>: Creating and collecting
 reusable modules for future applications.</li>
@@ -404,9 +423,10 @@ automation, regardless of current complexity.</li>
 <li><strong><em>Efficiency</em></strong>: maintaining a clutter-free
 workspace including the removal of unnecessary objects.</li>
 </ul>
+<hr />
 </div>
 <div id="tools" class="section level3">
-<h3>Tools:</h3>
+<h3>Tools</h3>
 <ul>
 <li><strong><em>R Studio</em></strong>: Main tool to clean, analyze,
 visualize data.</li>
@@ -421,6 +441,7 @@ quickly.</li>
 <li><strong><em>Stackoverflow</em></strong>: Searching technical
 questions.</li>
 </ul>
+<hr />
 </div>
 </div>
 <div id="ask" class="section level2">
@@ -439,9 +460,10 @@ differently?</li>
 become members?</li>
 </ul></li>
 </ul>
+<hr />
 </div>
-<div id="prepare" class="section level2">
-<h2>PREPARE</h2>
+<div id="prepare" class="section level2 tabset">
+<h2 class="tabset">PREPARE</h2>
 <div id="data-source" class="section level3">
 <h3>Data Source</h3>
 <p>The data are downloaded from <a href="https://divvy-tripdata.s3.amazonaws.com/index.html">divvy</a>
@@ -459,6 +481,7 @@ subset of the data (2020Q1-202307).</p>
 <li>num of columns: 13</li>
 <li>num of rows: 17,962,572</li>
 </ul>
+<hr />
 </div>
 <div id="enviorment-prepare" class="section level3">
 <h3>Enviorment Prepare</h3>
@@ -466,7 +489,7 @@ subset of the data (2020Q1-202307).</p>
 <pre><code>## package &#39;tidyverse&#39; successfully unpacked and MD5 sums checked
 ## 
 ## The downloaded binary packages are in
-##  C:\Users\Dongli\AppData\Local\Temp\RtmpmKSH2p\downloaded_packages</code></pre>
+##  C:\Users\Dongli\AppData\Local\Temp\RtmpMryipE\downloaded_packages</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ## ✔ dplyr     1.1.2     ✔ readr     2.1.4
@@ -478,16 +501,18 @@ subset of the data (2020Q1-202307).</p>
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
 ## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<hr />
 </div>
 <div id="data-prepare" class="section level3">
 <h3>Data Prepare</h3>
-<div id="set-data-path-and-list-all-the-.csv-files." class="section level4">
-<h4>Set data path and list all the .csv files.</h4>
+<blockquote>
+<p>Set data path and file list.</p>
+</blockquote>
 <pre class="r"><code>data_path &lt;- &quot;./tripdata&quot;
 csv_files &lt;- list.files(data_path, pattern = &quot;\\.csv&quot;, full.names = TRUE)</code></pre>
-</div>
-<div id="check-the-col-name-consistency-between-multiple-tables." class="section level4">
-<h4>Check the col name consistency between multiple tables. <span class="icon" title="Reusable Module">♻</span></h4>
+<blockquote>
+<p>Check col name consistency.</p>
+</blockquote>
 <pre class="r reusable_module"><code>check_column_consistency &lt;- function(csv_files, std_cols) {
   inconsistent &lt;- FALSE
   err_list &lt;- character(0)
@@ -512,9 +537,9 @@ csv_files &lt;- list.files(data_path, pattern = &quot;\\.csv&quot;, full.names =
 std_cols &lt;- colnames(read.csv(csv_files[1])) 
 check_column_consistency(csv_files, std_cols)</code></pre>
 <pre><code>## [1] &quot;The colnames are consistent&quot;</code></pre>
-</div>
-<div id="combine-the-.csv-files-into-one-tibble" class="section level4">
-<h4>Combine the .csv files into one tibble</h4>
+<blockquote>
+<p>Combine .csv files into tibble</p>
+</blockquote>
 <pre class="r reusable_module"><code>combine_csvs_to_tibble &lt;- function(csv_files){
   tb = tibble() # declare an empty tibble
   for (file in csv_files){ # loop the path to rbind files to tb
@@ -524,11 +549,11 @@ check_column_consistency(csv_files, std_cols)</code></pre>
   return(tb)
 }
 tb &lt;- combine_csvs_to_tibble(csv_files)</code></pre>
+<hr />
 </div>
 </div>
-</div>
-<div id="process-1" class="section level2">
-<h2>PROCESS</h2>
+<div id="process-1" class="section level2 tabset">
+<h2 class="tabset">PROCESS</h2>
 <div id="inspect-data" class="section level3">
 <h3>Inspect data</h3>
 <pre class="r"><code>library(skimr)
@@ -773,10 +798,9 @@ skim_without_charts(tb)</code></pre>
 </div>
 <div id="transform-data-format" class="section level3">
 <h3>Transform Data Format</h3>
-<div id="date-converting-function" class="section level4">
-<h4>Date Converting function <span class="icon" title="Reusable Module">♻</span></h4>
-<p><em>Traditional way will miss at least 50% values due to the variety
-of date formats.</em> <em>The solution was inspired by <a href="https://stackoverflow.com/questions/70304425/r-datetime-series-missing-values">r2evans</a></em></p>
+<blockquote>
+<p>Date Converting function</p>
+</blockquote>
 <pre class="r reusable_module"><code>convert_datetime &lt;- function(column) {
   candidates &lt;- c(&quot;%Y-%m-%d %H:%M:%S&quot;, &quot;%Y-%m-%d %H:%M&quot;, &quot;%d/%m/%Y %H:%M:%S&quot;, &quot;%m/%d/%Y %H:%M:%S&quot;)
   out &lt;- as.POSIXct(column, format = candidates[1])
@@ -786,9 +810,14 @@ of date formats.</em> <em>The solution was inspired by <a href="https://stackove
   }
   return(out)
 }</code></pre>
-</div>
-<div id="mutate-data-types" class="section level4">
-<h4>Mutate Data Types</h4>
+<ul>
+<li>Traditional way will miss at least 50% values due to the variety of
+date formats.</li>
+<li>The solution was inspired by <a href="https://stackoverflow.com/questions/70304425/r-datetime-series-missing-values">r2evans</a></li>
+</ul>
+<blockquote>
+<p>Mutate Data Types</p>
+</blockquote>
 <pre class="r"><code>tb &lt;- tb %&gt;% 
   mutate(
     start_station_id = as.factor(start_station_id),
@@ -800,15 +829,15 @@ of date formats.</em> <em>The solution was inspired by <a href="https://stackove
     ended_at = convert_datetime(ended_at),
     started_at = convert_datetime(started_at)
   )</code></pre>
-</div>
-<div id="trim-incomplete-observations" class="section level4">
-<h4>Trim Incomplete Observations</h4>
+<blockquote>
+<p>Trim Incomplete Observations</p>
+</blockquote>
 <pre class="r"><code>tb &lt;- tb %&gt;% 
   filter(!is.na(start_station_id) &amp; !is.na(end_station_id) &amp; !is.na(end_lat) &amp; !is.na(end_lng))
 # less than 1% data lost after deleting</code></pre>
-</div>
-<div id="inspect-data-quality-of-stations" class="section level4">
-<h4>Inspect Data Quality of Stations</h4>
+<blockquote>
+<p>Inspect Data Quality of Stations</p>
+</blockquote>
 <ul>
 <li>station_id, station_name, and lat&amp;lng are three interchangeable
 geographic metrics</li>
@@ -870,12 +899,10 @@ cursor: pointer;
 }
 .icon:hover::before {
 opacity: 1;
-}
-.reusable_module {
-backgroud-color: lightgreen;
+} .reusable_module {
+background-color: lightblue;
 }
 </style>
-</div>
 </div>
 </div>
 

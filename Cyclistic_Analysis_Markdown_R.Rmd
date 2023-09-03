@@ -4,18 +4,40 @@ author: "Dongli Liu"
 date: "`r Sys.Date()`"
 output: html_document
 ---
-<span style="color:red">*To recurrent: pull  [repository](https://github.com/Dongli99/Cyclistic.git), download [data](https://centennialcollegeedu-my.sharepoint.com/:u:/g/personal/dliu99_my_centennialcollege_ca/EebPZIYzXXZAr0xgrzCrjkMBBJ1KGVEqkI1mHfyY7_SEqA?e=YmxcDV), extract tripdata/ to Cyclistic/, and open Cyclistic_Analysis_Markdown_R.Rmd in RStudio. Expect long-time running due to large dataset. Enjoy!*<span>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 options(repos = "https://mirror.rcg.sfu.ca/mirror/CRAN/")
 ```
 
-## INTRODUCTION
+## INTRODUCTION {.tabset}
 
+### Usage
+> To recurrent:
+
+  - pull [repository](https://github.com/Dongli99/Cyclistic.git)
+  - download [dataset](https://centennialcollegeedu-my.sharepoint.com/:u:/g/personal/dliu99_my_centennialcollege_ca/EebPZIYzXXZAr0xgrzCrjkMBBJ1KGVEqkI1mHfyY7_SEqA?e=YmxcDV)
+  - extract tripdata/ to Cyclistic/
+  - run Cyclistic_Analysis_Markdown_R.Rmd in RStudio
+  - expect long-time running due to large dataset.
+  
+> How to use 
+```{normal_modules}
+Normal code chunk.
+```
+
+```{reusable_module}
+Reusable code chunk.
+```
+
+---
+
+### Overview
 This project focuses on the completion of the Google Data Analytics Certificate case study. The case study involved real-world data analysis tasks within a fictional company, Cyclistic, a bike-share program operating in Chicago. The goal was to analyze data, answer critical business questions, and make data-driven recommendations to maximize annual memberships.
 
-### Process:
+---
+
+### Process
 The project followed a structured data analysis process:
 
 - ***Ask***: Defined key business questions and objectives.
@@ -25,7 +47,9 @@ The project followed a structured data analysis process:
 - ***Share***: Communicated findings through visualizations and reports.
 - ***Act***: Presented recommendations based on data insights.
 
-### Principles:
+---
+
+### Principles
 - ***Reusability***: Creating and collecting reusable modules for future applications.
 - ***Optimization***: Continuously enhancing modules through study and work.
 - ***Structured Organization***: Implementing an organized framework for knowledge and tools.
@@ -33,7 +57,9 @@ The project followed a structured data analysis process:
 - ***Automation***: Streamlining processes through automation, regardless of current complexity.
 - ***Efficiency***: maintaining a clutter-free workspace including the removal of unnecessary objects. 
 
-### Tools:
+---
+
+### Tools
 - ***R Studio***: Main tool to clean, analyze, visualize data.
 - ***Excel***: Prepare data as .csv files.
 - ***Python***: Automating download of multiple .zip files.
@@ -42,14 +68,18 @@ The project followed a structured data analysis process:
 - ***ChatGPT***: Answering technical questions quickly.
 - ***Stackoverflow***: Searching technical questions.
 
+---
+
 ## ASK
 * ***Business Objective***: Cyclistic aimed to increase annual memberships and understand the differences in bike usage between annual members and casual riders.
 * ***Key Questions***: Three guiding questions drove the analysis:
   * How do annual members and casual riders use Cyclistic bikes differently?
   * Why would casual riders buy Cyclistic annual memberships?
   * How can Cyclistic use digital media to influence casual riders to become members?
+  
+---
 
-## PREPARE
+## PREPARE {.tabset}
 
 ### Data Source
 The data are downloaded from [divvy](https://divvy-tripdata.s3.amazonaws.com/index.html) which is introduced by Coursera and Google. 
@@ -63,20 +93,27 @@ The case study selects the subset of the data (2020Q1-202307).
   - num of columns: 13
   - num of rows: 17,962,572
 
+---
+
 ### Enviorment Prepare
 ```{r env_prepare}
 install.packages("tidyverse")
 library(tidyverse)
 ```
 
+---
+
 ### Data Prepare
-#### Set data path and list all the .csv files.
+
+> Set data path and file list.
+
 ```{r importing}
 data_path <- "./tripdata"
 csv_files <- list.files(data_path, pattern = "\\.csv", full.names = TRUE)
 ```
 
-#### Check the col name consistency between multiple tables. <span class="icon" title="Reusable Module">&#9851;</span>
+> Check col name consistency.
+
 ```{r colname_consistency, class.source = "reusable_module"}
 check_column_consistency <- function(csv_files, std_cols) {
   inconsistent <- FALSE
@@ -103,7 +140,8 @@ std_cols <- colnames(read.csv(csv_files[1]))
 check_column_consistency(csv_files, std_cols)
 ```
 
-#### Combine the .csv files into one tibble
+> Combine .csv files into tibble
+
 ```{r combine_to_tb, class.source = "reusable_module"}
 combine_csvs_to_tibble <- function(csv_files){
   tb = tibble() # declare an empty tibble
@@ -116,15 +154,23 @@ combine_csvs_to_tibble <- function(csv_files){
 tb <- combine_csvs_to_tibble(csv_files)
 ```
 
-## PROCESS
+---
+
+## PROCESS {.tabset}
+
 ### Inspect data
+
 ```{r inspect_tb}
 library(skimr)
 skim_without_charts(tb)
 ```
-### Transform Data Format
 
-#### Date Converting function <span class="icon" title="Reusable Module">&#9851;</span>
+---
+
+### Transform Format
+
+> Date Converting function
+
 ```{r convert_datetime, class.source = "reusable_module"}
 convert_datetime <- function(column) {
   candidates <- c("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M", "%d/%m/%Y %H:%M:%S", "%m/%d/%Y %H:%M:%S")
@@ -140,7 +186,8 @@ convert_datetime <- function(column) {
 - Traditional way will miss at least 50% values due to the variety of date formats.
 - The solution was inspired by [r2evans](https://stackoverflow.com/questions/70304425/r-datetime-series-missing-values)
 
-#### Mutate Data Types
+> Mutate Data Types
+
 ```{r mutate_data_type}
 tb <- tb %>% 
   mutate(
@@ -155,14 +202,20 @@ tb <- tb %>%
   )
 ```
 
-#### Trim Incomplete Observations
+---
+
+### Improve Quality
+
+> Trim Incomplete Observations
+
 ```{r delete_incomplete}
 tb <- tb %>% 
   filter(!is.na(start_station_id) & !is.na(end_station_id) & !is.na(end_lat) & !is.na(end_lng))
 # less than 1% data lost after deleting
 ```
 
-#### Inspect Data Quality of Stations
+> Inspect Stations
+
 - station_id, station_name, and lat&lng are three interchangeable geographic metrics
 - This task is choose and optimize one geographic data for future analysis
 
@@ -194,7 +247,7 @@ lat_lng_list <- tb %>%
 - lat and lng are not accuracy enough
 - Decide to use station name, check the distribution of empty name.
 
-```{r check_empty_name, class.source = "reusable_module"}
+```{r check_empty_name, class.source = "reusable_module", warning=FALSE}
 empty_value_monthly <- function(tb, date_col, col_to_check1, col_to_check2){
   empty_list <- tb %>% 
   mutate(
@@ -214,6 +267,13 @@ empty_value_monthly <- function(tb, date_col, col_to_check1, col_to_check2){
 empty_value_monthly(tb, "started_at", "start_station_name", "end_station_name")
 ```
 
+- The empty values are evenly distributed, so the influence is considered limited.
+- Decide to delete the empty names.
+
+```{r remove_empty}
+tb <- tb %>% 
+  filter(start_station_name != "" & end_station_name != "")
+```
 
 
 <style>
@@ -225,7 +285,7 @@ empty_value_monthly(tb, "started_at", "start_station_name", "end_station_name")
   opacity: 1;
 }  
 .reusable_module {
-  background-color: lightgreen;
+  background-color: lightblue;
 }
 </style>
  
