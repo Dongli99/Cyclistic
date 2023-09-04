@@ -113,3 +113,9 @@ ggplot(tb, aes(x = member_casual, y = as.numeric(ended_at - started_at), fill = 
 station_list <- tb %>% 
   select(start_station_id, start_station_name) %>% 
   group_by(start_station_id)
+
+name_freq <- tb %>% 
+  select(start_station_name) %>% 
+  group_by(start_station_name) %>% 
+  summarize(n=n())
+View(name_freq)

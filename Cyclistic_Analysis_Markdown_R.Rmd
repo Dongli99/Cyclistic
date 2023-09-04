@@ -214,7 +214,7 @@ tb <- tb %>%
 # less than 1% data lost after deleting
 ```
 
-> Inspect Stations
+> Inspect stations quality
 
 - station_id, station_name, and lat&lng are three interchangeable geographic metrics
 - This task is choose and optimize one geographic data for future analysis
@@ -275,15 +275,13 @@ tb <- tb %>%
   filter(start_station_name != "" & end_station_name != "")
 ```
 
+---
+
+### Add Useful Columns
+
+
 
 <style>
-.icon {
-  color: green;
-  cursor: pointer;
-}
-.icon:hover::before {
-  opacity: 1;
-}  
 .reusable_module {
   background-color: lightblue;
 }
