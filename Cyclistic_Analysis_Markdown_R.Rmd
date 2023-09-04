@@ -277,7 +277,22 @@ tb <- tb %>%
 
 ---
 
-### Add Useful Columns
+### Refine 
+
+```{r refine_dataset}
+trips <- tb %>% 
+  select(ride_id, rideable_type, started_at, ended_at, start_station_name, end_station_name, member_casual) %>% 
+  mutate(
+    duration = as.integer((ended_at - started_at)/60),
+    weekday = as.factor(weekdays(started_at))
+  ) %>% 
+  mutate(
+    is_weekend = ifelse(weekday %in% c("Saturday", "Sunday"), TRUE, FALSE)
+  )
+glimpse(trips)
+```
+
+---
 
 
 
