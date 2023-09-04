@@ -13,7 +13,7 @@ options(repos = "https://mirror.rcg.sfu.ca/mirror/CRAN/")
 ## INTRODUCTION {.tabset}
 
 ### Usage
-> To recurrent:
+> To recurrent this case studay:
 
   - pull [repository](https://github.com/Dongli99/Cyclistic.git)
   - download [dataset](https://centennialcollegeedu-my.sharepoint.com/:u:/g/personal/dliu99_my_centennialcollege_ca/EebPZIYzXXZAr0xgrzCrjkMBBJ1KGVEqkI1mHfyY7_SEqA?e=YmxcDV)
@@ -22,18 +22,19 @@ options(repos = "https://mirror.rcg.sfu.ca/mirror/CRAN/")
   - expect long-time running due to large dataset.
   
 > How to use 
-```{normal_modules}
-Normal code chunk.
+
+```{r normal_modules, eval=FALSE}
+print("This is a normal code chunk.")
 ```
 
-```{reusable_module}
-Reusable code chunk.
+```{r reusable_module, class.source="reusable_module", eval=FALSE}
+print("This is a reusable code chunk.")
 ```
 
 ---
 
 ### Overview
-This project focuses on the completion of the Google Data Analytics Certificate case study. The case study involved real-world data analysis tasks within a fictional company, Cyclistic, a bike-share program operating in Chicago. The goal was to analyze data, answer critical business questions, and make data-driven recommendations to maximize annual memberships.
+This project focuses on the completion of the [Google Data Analytics Professional Certificate](https://www.coursera.org/professional-certificates/google-data-analytics?) case study. The case study involved real-world data analysis tasks within a fictional company, Cyclistic, a bike-share program operating in Chicago. The goal was to analyze data, answer critical business questions, and make data-driven recommendations to maximize annual memberships.
 
 ---
 
@@ -83,8 +84,8 @@ The project followed a structured data analysis process:
 
 ### Data Source
 The data are downloaded from [divvy](https://divvy-tripdata.s3.amazonaws.com/index.html) which is introduced by Coursera and Google. 
-To download multiple files automatically, the [mutidownloader Python app](https://github.com/Dongli99/MultiDownloader.git) <span class="icon" title="Reusable Module">&#9851;</span> was developed under the assistant of ChatGPT.
-The case study selects the subset of the data (2020Q1-202307).
+To download multiple files automatically, the [mutidownloader Python app](https://github.com/Dongli99/MultiDownloader.git) was developed under the assistant of ChatGPT.
+This case study selects the subset of the data (2020Q1-202307).
 
 > Data Overview
 
@@ -148,7 +149,7 @@ combine_csvs_to_tibble <- function(csv_files){
   for (file in csv_files){ # loop the path to rbind files to tb
     f <- read.csv(file)
     tb <- rbind(tb, f)
-  }
+  } 
   return(tb)
 }
 tb <- combine_csvs_to_tibble(csv_files)
@@ -206,18 +207,25 @@ tb <- tb %>%
 
 ### Improve Quality
 
-> Trim Incomplete Observations
+> Trim abnormal Observations
 
-```{r delete_incomplete}
+```{r delete_abnormal}
 tb <- tb %>% 
-  filter(!is.na(start_station_id) & !is.na(end_station_id) & !is.na(end_lat) & !is.na(end_lng))
-# less than 1% data lost after deleting
+  filter(
+    !is.na(start_station_id) & 
+      !is.na(end_station_id) &
+      !is.na(end_lat) & 
+      !is.na(end_lng) &
+      started_at < ended_at
+    )
 ```
 
-> Inspect stations quality
+- less than 1% abnormal data were deleted
+
+> Inspect geographic variable
 
 - station_id, station_name, and lat&lng are three interchangeable geographic metrics
-- This task is choose and optimize one geographic data for future analysis
+- This task is to select and optimize one geographic data for future analysis
 
 ```{r inspect_station_id_name}
 station_list <- tb %>% 
@@ -225,10 +233,12 @@ station_list <- tb %>%
   group_by(start_station_id, start_station_name) %>% 
   summarize(n = n(), .groups = 'drop') %>% 
   arrange(start_station_name)
+station_list %>%
+  filter(start_station_name == "")
 ```
 
-- 10% (2015929) rows have empty station id & name. 
-- For better accuracy, seeking probability of using lng & lat as station.
+- 11.3% (2015743) rows have empty station id & name. 
+- Seeking probability of alternatively using lng & lat.
 
 ```{r inspect_lat_lng}
 lat_lng_list <- tb %>% 
@@ -236,16 +246,17 @@ lat_lng_list <- tb %>%
     start_lat = round(start_lat, digits = 3),
     start_lng = round(start_lng, digits = 3),
     end_lat = round(end_lat, digits = 3),
-    end_lng = round(end_lng, digits = 3)
+    end_lng = round(end_lng, digits = 3)# str(lat_lng_list)
   ) %>% 
   select(start_lat, start_lng) %>%
   group_by(start_lat, start_lng) %>% 
   summarize(n = n(), .groups = 'drop') %>% 
   arrange(start_lat)
+str(lat_lng_list)
 ```
 
-- lat and lng are not accuracy enough
-- Decide to use station name, check the distribution of empty name.
+- according to the number of rows `digit=2: 749; digit=3: 4878`, lat&lng is not good representative.
+- Before using station name, check the distribution of empty name.
 
 ```{r check_empty_name, class.source = "reusable_module", warning=FALSE}
 empty_value_monthly <- function(tb, date_col, col_to_check1, col_to_check2){
@@ -267,8 +278,8 @@ empty_value_monthly <- function(tb, date_col, col_to_check1, col_to_check2){
 empty_value_monthly(tb, "started_at", "start_station_name", "end_station_name")
 ```
 
-- The empty values are evenly distributed, so the influence is considered limited.
-- Decide to delete the empty names.
+- the empty values are evenly distributed, so the influence is considered limited.
+- improve the data quality by deleting the rows with empty station names.
 
 ```{r remove_empty}
 tb <- tb %>% 
@@ -294,6 +305,9 @@ glimpse(trips)
 
 ---
 
+## Analyze {.tabset}
+
+### Duration
 
 
 <style>
