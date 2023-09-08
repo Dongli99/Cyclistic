@@ -137,3 +137,7 @@ combined_summary <- rbind(member_summary, casual_summary)
 # Print the combined summary
 print(combined_summary)
 
+colnames(
+  skim(trips) %>% 
+  as_tibble()
+  )

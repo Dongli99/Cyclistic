@@ -488,7 +488,7 @@ study selects the subset of the data (2020Q1-202307).</p>
 <pre><code>## package &#39;tidyverse&#39; successfully unpacked and MD5 sums checked
 ## 
 ## The downloaded binary packages are in
-##  C:\Users\Dongli\AppData\Local\Temp\RtmpqoBrYq\downloaded_packages</code></pre>
+##  C:\Users\Dongli\AppData\Local\Temp\RtmpgJOXgl\downloaded_packages</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ## ✔ dplyr     1.1.2     ✔ readr     2.1.4
@@ -963,6 +963,12 @@ glimpse(trips)</code></pre>
 <h2 class="tabset">Analyze</h2>
 <div id="group-summary" class="section level3">
 <h3>Group Summary</h3>
+<blockquote>
+<p>In-depth comparable summary</p>
+</blockquote>
+<ul>
+<li>some insights can be detected by this function</li>
+</ul>
 <pre class="r reusable_module"><code>comparable_summaries &lt;- function(df, col, groups){
   summary = data.frame()
   for (i in seq_along(groups)) {

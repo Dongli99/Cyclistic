@@ -72,7 +72,7 @@ The project followed a structured data analysis process:
 ---
 
 ## ASK
-* ***Business Objective***: Cyclistic aimed to increase annual memberships and understand the differences in bike usage between annual members and casual riders.
+* ***Business Objective***: Cyclistic aimed to increase annual memberships based on understanding the differences in bike usage between annual members and casual riders.
 * ***Key Questions***: Three guiding questions drove the analysis:
   * How do annual members and casual riders use Cyclistic bikes differently?
   * Why would casual riders buy Cyclistic annual memberships?
@@ -89,10 +89,24 @@ This case study selects the subset of the data (2020Q1-202307).
 
 > Data Overview
 
+  - location: root/tripdata
+  - organization: 202003 include Q1 data, others are organized by month.
   - data size: 3.3G
   - num of files: 41
   - num of columns: 13
   - num of rows: 17,962,572
+
+> Data evaluation
+  
+  - credibility: high
+  - problems:
+    - distinct organization before 2020  -> only choose data after 2020
+    - empty value on multiple columns -> investigate and clean in the following steps
+    - duplicated rows -> investigate and clean in the following steps
+  - usefulness to the business goal:
+    - there are multiple variables can be analyze the different behaviors between member and casual.
+    - It should be easy to get insights from the behaviors of the two groups.
+    - The data is not promotion oriented. To achieve the goal, additional survey may be necessary. 
 
 ---
 
@@ -317,7 +331,8 @@ glimpse(trips)
 
 > In-depth comparable summary
 
-- some insights can be detected in text by this function
+- some insights can be initially detected by this function
+- based on the summaries, hypothesis are made for further analysis
 
 ```{r group_summary, class.source = "reusable_module", warning=FALSE}
 comparable_summaries <- function(df, col, groups){
@@ -368,8 +383,7 @@ comparable_summaries <- function(df, col, groups){
 comparable_summaries(trips, "member_casual", c("member", "casual"))
 ```
 
-
-
+### 
 
 
 <style>
