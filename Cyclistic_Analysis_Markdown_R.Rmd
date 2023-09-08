@@ -290,6 +290,12 @@ tb <- tb %>%
 
 ### Refine 
 
+> Rearrange columns
+
+- remove unnecessary cols.
+- add useful cols for further analysis.
+
+
 ```{r refine_dataset}
 trips <- tb %>% 
   select(ride_id, rideable_type, started_at, ended_at, start_station_name, end_station_name, member_casual) %>% 
@@ -308,6 +314,10 @@ glimpse(trips)
 ## Analyze {.tabset}
 
 ### Group Summary
+
+> In-depth comparable summary
+
+- some insights can be detected in text by this function
 
 ```{r group_summary, class.source = "reusable_module", warning=FALSE}
 comparable_summaries <- function(df, col, groups){
@@ -330,22 +340,28 @@ comparable_summaries <- function(df, col, groups){
       percentage = n_rows / nrow(df) * 100
         ) %>% 
     print()
-
+  print("------------------------------------------------------------------")
   nm_summary <- summary %>% 
     filter(!is.na(numeric.mean)) %>% 
     select(var = skim_variable, group, min = numeric.p0, max = numeric.p100, median = numeric.p50, mean = numeric.mean) %>% 
     group_by(var) %>% 
     print()
-  
+  print("------------------------------------------------------------------")
   chr_summary <- summary %>% 
     filter(!is.na(character.n_unique)) %>% 
     select(var = skim_variable, group, unique_values = character.n_unique) %>% 
     group_by(var) %>% 
     print()
-  
+  print("------------------------------------------------------------------")
   fct_summary <- summary %>% 
     filter(!is.na(factor.top_counts)) %>%
     select(var = skim_variable, group, count = factor.top_counts) %>% 
+    group_by(var) %>% 
+    print()
+  print("------------------------------------------------------------------")
+  lgc_summary <- summary %>% 
+    filter(!is.na(logical.count)) %>% 
+    select(var = skim_variable, group, count = logical.count) %>% 
     group_by(var) %>% 
     print()
 }
