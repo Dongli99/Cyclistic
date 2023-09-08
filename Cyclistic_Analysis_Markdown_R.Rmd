@@ -100,6 +100,7 @@ This case study selects the subset of the data (2020Q1-202307).
 ```{r env_prepare}
 install.packages("tidyverse")
 library(tidyverse)
+library(skimr)
 ```
 
 ---
@@ -162,7 +163,6 @@ tb <- combine_csvs_to_tibble(csv_files)
 ### Inspect data
 
 ```{r inspect_tb}
-library(skimr)
 skim_without_charts(tb)
 ```
 
@@ -185,7 +185,7 @@ convert_datetime <- function(column) {
 ```
 
 - Traditional way will miss at least 50% values due to the variety of date formats.
-- The solution was inspired by [r2evans](https://stackoverflow.com/questions/70304425/r-datetime-series-missing-values)
+- This solution was inspired by [r2evans](https://stackoverflow.com/questions/70304425/r-datetime-series-missing-values)
 
 > Mutate Data Types
 
@@ -307,7 +307,53 @@ glimpse(trips)
 
 ## Analyze {.tabset}
 
-### Duration
+### Group Summary
+
+```{r group_summary, class.source = "reusable_module", warning=FALSE}
+comparable_summaries <- function(df, col, groups){
+  summary = data.frame()
+  for (i in seq_along(groups)) {
+    group_skim <- df %>% 
+      filter(.data[[col]] == groups[i]) %>% 
+      skim() %>% 
+      mutate(
+        group = groups[i]
+      ) %>% 
+      as_tibble()
+    summary <- rbind(summary, group_skim)
+  }
+  sum <- df %>% 
+    filter(.data[[col]] %in% groups) %>% 
+    group_by(.data[[col]]) %>% 
+    summarize(
+      n_rows = n(), 
+      percentage = n_rows / nrow(df) * 100
+        ) %>% 
+    print()
+
+  nm_summary <- summary %>% 
+    filter(!is.na(numeric.mean)) %>% 
+    select(var = skim_variable, group, min = numeric.p0, max = numeric.p100, median = numeric.p50, mean = numeric.mean) %>% 
+    group_by(var) %>% 
+    print()
+  
+  chr_summary <- summary %>% 
+    filter(!is.na(character.n_unique)) %>% 
+    select(var = skim_variable, group, unique_values = character.n_unique) %>% 
+    group_by(var) %>% 
+    print()
+  
+  fct_summary <- summary %>% 
+    filter(!is.na(factor.top_counts)) %>%
+    select(var = skim_variable, group, count = factor.top_counts) %>% 
+    group_by(var) %>% 
+    print()
+}
+comparable_summaries(trips, "member_casual", c("member", "casual"))
+```
+
+
+
 
 
 <style>

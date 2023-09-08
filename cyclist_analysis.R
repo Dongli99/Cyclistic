@@ -1,3 +1,6 @@
+# This file is for writing and testing codes
+# The codes that decide to use will be organized into .Rmd 
+
 install.packages("tidyverse")
 library(tidyverse)
 
@@ -119,3 +122,18 @@ name_freq <- tb %>%
   group_by(start_station_name) %>% 
   summarize(n=n())
 View(name_freq)
+
+# testing comparable summary 
+member_summary <- skim(trips %>% filter(member_casual == "member"))
+casual_summary <- skim(trips %>% filter(member_casual == "casual"))
+
+# Add group labels to the summaries
+member_summary$group <- "member"
+casual_summary$group <- "casual"
+
+# Combine the summaries manually
+combined_summary <- rbind(member_summary, casual_summary)
+
+# Print the combined summary
+print(combined_summary)
+
