@@ -86,17 +86,17 @@ The project followed a structured data analysis process:
 
 ### Data Source
 The data are downloaded from [divvy](https://divvy-tripdata.s3.amazonaws.com/index.html) which is introduced by Coursera and Google. 
-To download multiple files automatically, the [mutidownloader Python app](https://github.com/Dongli99/MultiDownloader.git) was developed under the assistant of ChatGPT.
-This case study selects the subset of the data (2020Q1-202307).
+* In the [local version](https://github.com/Dongli99/Cyclistic.git) of the project, in order to download multiple files automatically, the [mutidownloader Python app](https://github.com/Dongli99/MultiDownloader.git) was developed under the assistant of ChatGPT.
+* On kaggle, a loop is created to gather and select the data spreaded in several datasets.
+* This case study selects the subset of the data (2020Q1-202307).
 
-> Data Overview
+| Data Overview    | Value                |
+|------------------|----------------------|
+| Data size        | 3.3G                 |
+| Number of files  | 41                   |
+| Number of columns| 13                   |
+| Number of rows   | 17,962,572           |
 
-  - location: root/tripdata
-  - organization: 202003 include Q1 data, others are organized by month.
-  - data size: 3.3G
-  - num of files: 41
-  - num of columns: 13
-  - num of rows: 17,962,572
 
 > Data evaluation
   
@@ -184,7 +184,7 @@ skim_without_charts(tb)
 
 ---
 
-### Transform Format
+### Transform data format
 
 > Date Converting function
 
@@ -241,7 +241,8 @@ tb <- tb %>%
 > Inspect geographic variable
 
 - station_id, station_name, and lat&lng are three interchangeable geographic metrics
-- This task is to select and optimize one geographic data for future analysis
+- lat&lng can be the measure of distance, and station id/name can be used for promotion
+- This task is to inspect and optimize geographic data for future analysis
 
 ```{r inspect_station_id_name}
 station_list <- tb %>% 
@@ -254,25 +255,7 @@ station_list %>%
 ```
 
 - 11.3% (2015743) rows have empty station id & name. 
-- Seeking probability of alternatively using lng & lat.
-
-```{r inspect_lat_lng}
-lat_lng_list <- tb %>% 
-  mutate(
-    start_lat = round(start_lat, digits = 3),
-    start_lng = round(start_lng, digits = 3),
-    end_lat = round(end_lat, digits = 3),
-    end_lng = round(end_lng, digits = 3)# str(lat_lng_list)
-  ) %>% 
-  select(start_lat, start_lng) %>%
-  group_by(start_lat, start_lng) %>% 
-  summarize(n = n(), .groups = 'drop') %>% 
-  arrange(start_lat)
-str(lat_lng_list)
-```
-
-- according to the number of rows `digit=2: 749; digit=3: 4878`, lat&lng is not good representative.
-- Before using station name, check the distribution of empty name.
+- Before cleaning station name, check the distribution of empty name.
 
 ```{r check_empty_name, class.source = "reusable_module", warning=FALSE}
 empty_value_monthly <- function(tb, date_col, col_to_check1, col_to_check2){
@@ -314,9 +297,9 @@ tb <- tb %>%
 
 ```{r refine_dataset}
 trips <- tb %>% 
-  select(ride_id, rideable_type, started_at, ended_at, start_station_name, end_station_name, member_casual) %>% 
   mutate(
     duration = as.integer((ended_at - started_at)/60),
+    distance = round((sqrt((end_lat-start_lat)^2 + (end_lng-start_lng)^2))*1000000),
     weekday = as.factor(weekdays(started_at))
   ) %>% 
   mutate(
@@ -385,7 +368,44 @@ comparable_summaries <- function(df, col, groups){
 comparable_summaries(trips, "member_casual", c("member", "casual"))
 ```
 
-### 
+### Insights Based on the Comparable Summary
+1. Casual riders are over 40%, showing high business potential.
+2. Riding durations of casual are 2.44 times that of member, which is a big gap.
+3. While the duration are significantly different, the distance of the two groups are similar.
+4. Casual riders favorate riding in weekend, while the members usually ride in workdays. 
+5. The stations of casuals and members visited most frequently are also distinct. A further geographical investigation is necessary to discover more.
+6. Through the insights above, we may infer the pattern of casual riders. Many of them prefer riding in the weekend. Rather than taking bikes as a transpotation tool, they are more enjoying life.
+
+### Most Popular Stations
+
+```{r popular_stations}
+start_stations <- trips %>%
+  filter(member_casual=="casual") %>% 
+  group_by(start_station_name) %>% 
+  summarize(n = n(), .groups = 'drop') %>%
+  rename(station_name = start_station_name)
+
+end_stations <- trips %>%
+  filter(member_casual=="casual") %>% 
+  group_by(end_station_name) %>% 
+  summarize(n = n(), .groups = 'drop') %>%
+    rename(station_name = end_station_name)
+
+stations <- rbind(start_stations, end_stations) %>%
+  group_by(station_name) %>%
+  summarise(n = sum(n), .groups = 'drop') %>% 
+  arrange(-n) %>% 
+  top_n(20, wt=n)
+
+ggplot(data = stations) +
+  geom_bar(mapping = aes(x=reorder(station_name, n), y=n), stat = "identity", position = "dodge") +
+  coord_flip() +
+  labs(title = "Top 20 popular Stations for Casual Users",
+     x = "Station Name",
+     y = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
 
 
 <style>

@@ -4,13 +4,6 @@
 install.packages("tidyverse")
 library(tidyverse)
 
-# data path
-csc_files = c(
-  "/kaggle/input/divvy-trips/Divvy_Trips_2020_Q1.csv",
-  "/kaggle/input/cyclistics-data-april-2020-march-2021"
-)
-
-
 # prepare data.
 data_path <- "./tripdata"
 csv_files <- list.files(data_path, pattern = "\\.csv", full.names = TRUE)
