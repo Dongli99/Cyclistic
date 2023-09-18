@@ -14,8 +14,10 @@ options(repos = "https://mirror.rcg.sfu.ca/mirror/CRAN/")
 
 ### Usage
 > To recurrent this case studay:
+*Considering the size of the dataset, this version may be better to read only.*
+*A [Kaggle version](https://www.kaggle.com/code/dongliai/cyclistic-bike-share-a-case-study) is much easier to recurrent.*
 
-  - pull [repository](https://github.com/Dongli99/Cyclistic.git)
+  - to run this version locally, pull [repository](https://github.com/Dongli99/Cyclistic.git)
   - download [dataset](https://centennialcollegeedu-my.sharepoint.com/:u:/g/personal/dliu99_my_centennialcollege_ca/EebPZIYzXXZAr0xgrzCrjkMBBJ1KGVEqkI1mHfyY7_SEqA?e=YmxcDV)
   - extract tripdata/ to Cyclistic/
   - run Cyclistic_Analysis_Markdown_R.Rmd in RStudio
