@@ -15,7 +15,7 @@ options(repos = "https://mirror.rcg.sfu.ca/mirror/CRAN/")
 ### Usage
 > To recurrent this case studay:
 *Considering the size of the dataset, this version may be better to read only.*
-*A [Kaggle version](https://www.kaggle.com/code/dongliai/cyclistic-bike-share-a-case-study) is much easier to recurrent.*
+*A [Kaggle version](https://www.kaggle.com/dongliai/cyclistic-analysis-workflow-using-r) is much easier to recurrent.*
 
   - to run this version locally, pull [repository](https://github.com/Dongli99/Cyclistic.git)
   - download [dataset](https://centennialcollegeedu-my.sharepoint.com/:u:/g/personal/dliu99_my_centennialcollege_ca/EebPZIYzXXZAr0xgrzCrjkMBBJ1KGVEqkI1mHfyY7_SEqA?e=YmxcDV)
@@ -87,7 +87,7 @@ The project followed a structured data analysis process:
 ### Data Source
 The data are downloaded from [divvy](https://divvy-tripdata.s3.amazonaws.com/index.html) which is introduced by Coursera and Google. 
 * In the [local version](https://github.com/Dongli99/Cyclistic.git) of the project, in order to download multiple files automatically, the [mutidownloader Python app](https://github.com/Dongli99/MultiDownloader.git) was developed under the assistant of ChatGPT.
-* On kaggle, a loop is created to gather and select the data spreaded in several datasets.
+* On [kaggle](https://www.kaggle.com/dongliai/cyclistic-analysis-workflow-using-r), a loop is created to gather and select the data spreaded in several datasets.
 * This case study selects the subset of the data (2020Q1-202307).
 
 | Data Overview    | Value                |
@@ -405,6 +405,18 @@ ggplot(data = stations) +
      y = "Count") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+### Most visited Locations on google map
+*This section is only available at [kaggle version](https://www.kaggle.com/dongliai/cyclistic-analysis-workflow-using-r)*
+```{r}
+# Assuming 'routes' data frame is already calculated
+# routes <- ... (your code to calculate routes)
+
+routes <- trips %>%
+  group_by(member_casual, start_lng, start_lat, end_lng, end_lat) %>%
+  reframe(group = member_casual, n = n())
+print(routes)
+
 ```
 
 
