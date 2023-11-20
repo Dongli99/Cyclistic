@@ -91,7 +91,7 @@ The project used graphical libraries to gain insights (see below).
 
 - The popular stations for two groups are distinct.
 
-![Alt compare3](/img/image-2.png)
+<img src="/img/image-2.png"  width="500">
 
 - For casual, more riding happened on weekends.
 
