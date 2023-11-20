@@ -3,7 +3,8 @@
 ![Static Badge](https://img.shields.io/badge/R-Big_Data-blue)
 ![Static Badge](https://img.shields.io/badge/kaggle-Jupyter_Notebook-yellow)
 ![Static Badge](https://img.shields.io/badge/Google-Analytics_Certificate-red)  
-<img src="citybike.png"  width="500" height="500">
+
+<img src="/img/citybike.png"  width="300" height="300">
 
 ## Background
 
