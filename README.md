@@ -81,17 +81,16 @@ The project used graphical libraries to gain insights (see below).
 ## Key Findings
 
 ### Initial findings from ```comparable_summaries(df, col, groups)```
-
-![Alt compare1](/img/image.png)
+<img src="/img/image.png"  width="600">
 
 - Casual riders are over 40%, showing high business potential.
 - Although the distance of trips are similar, casual trips are 2.44 times slower in speed. Which shows evidence of leisure riding.
 
-![Alt compare2](/img/image-1.png)
+<img src="/img/image-1.png"  width="600">
 
 - The popular stations for two groups are distinct.
 
-<img src="/img/image-2.png"  width="500">
+<img src="/img/image-2.png"  width="600">
 
 - For casual, more riding happened on weekends.
 
@@ -113,13 +112,13 @@ The project used graphical libraries to gain insights (see below).
 
 ### Findings of travel time patterns
 
-![Alt seasonal](/img/image-7.png)
+<img src="/img/image-7.png"  height="600">
 
 - Strong seasonal volatility.
 - Both trips are at the same level in Summer.
 - Casual trips drop to significant lower level in winter.
 
-![Alt weektime](/img/image-8.png)
+<img src="/img/image-8.png"  width="600">
 
 - Trends are very similar in weekdays or in weekends respectively.
 - In weekend, Overlapping lines reveal same behavior between two groups.
