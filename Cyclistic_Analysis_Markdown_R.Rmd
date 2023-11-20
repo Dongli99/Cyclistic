@@ -115,8 +115,12 @@ The data are downloaded from [divvy](https://divvy-tripdata.s3.amazonaws.com/ind
 ### Enviorment Prepare
 ```{r env_prepare}
 install.packages("tidyverse")
+install.packages("leaflet")
+install.packages("ellipsis")
 library(tidyverse)
 library(skimr)
+library(leaflet)
+library(ellipsis)
 ```
 
 ---
@@ -406,19 +410,178 @@ ggplot(data = stations) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
-### Most visited Locations on google map
-*This section is only available at [kaggle version](https://www.kaggle.com/dongliai/cyclistic-analysis-workflow-using-r)*
-```{r}
-# Assuming 'routes' data frame is already calculated
-# routes <- ... (your code to calculate routes)
+#### Most visited stations on map
 
+```{r stations_map}
+# prepare data
 routes <- trips %>%
   group_by(member_casual, start_lng, start_lat, end_lng, end_lat) %>%
-  reframe(group = member_casual, n = n())
-print(routes)
+  summarize(n = n(), .groups="drop") %>%
+  top_n(100, wt = n)
 
+# General station distribution
+leaflet(routes) %>% 
+  setView(lng = -87.6298, lat = 41.8781, zoom = 10.5) %>% 
+  addTiles() %>% 
+  addProviderTiles(providers$CartoDB.Positron)%>%
+  addCircleMarkers(
+      ~start_lng,
+      ~start_lat,
+      radius = 9,
+      color = ~ifelse(member_casual == "member", "red", "blue"),
+      stroke = FALSE, fillOpacity = 0.5
+  )%>%  
+  addCircleMarkers(
+      ~end_lng,
+      ~end_lat,
+      radius = 9,
+      color = ~ifelse(member_casual == "member", "red", "blue"),
+      stroke = FALSE, fillOpacity = 0.5
+  ) 
 ```
 
+  - Blue dots represents "casual user", red dots are for "member user". If one station is loved by both, it appears purple.
+  - The two types of stations show different distributions.
+  - Member's station distributed in clusters. In contrast, Casual user's stations are mostly along the lake as a line and all the way to the north.  
+  
+#### Weekday visitings
+
+```{r weekday_routes}
+# Compare busy stations in workdays and weekends
+# prepare data
+workday_routes <- trips %>%
+  filter(!is_weekend)%>%
+  group_by(member_casual, start_lng, start_lat, end_lng, end_lat) %>%
+  summarize(n = n(), .groups="drop") %>%
+  top_n(100, wt = n)
+
+weekend_routes <- trips %>%
+  filter(is_weekend)%>%
+  group_by(member_casual, start_lng, start_lat, end_lng, end_lat) %>%
+  summarize(n = n(), .groups="drop") %>%
+  top_n(100, wt = n)
+
+# plot routes map
+print("Routes on Workdays")
+leaflet(workday_routes) %>% 
+  setView(lng = -87.6298, lat = 41.8781, zoom = 10.5) %>% 
+  addTiles() %>% 
+  addProviderTiles(providers$CartoDB.Positron)%>%
+  addCircleMarkers(
+      ~start_lng,
+      ~start_lat,
+      radius = 8,
+      color = ~ifelse(member_casual == "member", "red", "blue"),
+      stroke = TRUE, fillOpacity = 0
+  )%>%  
+  addCircleMarkers(
+      ~end_lng,
+      ~end_lat,
+      radius = 8,
+      color = ~ifelse(member_casual == "member", "red", "blue"),
+      stroke = TRUE, fillOpacity = 0
+  ) 
+
+print("Routes in Weekend")
+leaflet(weekend_routes) %>% 
+  setView(lng = -87.6298, lat = 41.8781, zoom = 10.5) %>% 
+  addTiles() %>% 
+  addProviderTiles(providers$CartoDB.Positron)%>%
+  addCircleMarkers(
+      ~start_lng,
+      ~start_lat,
+      radius = 8,
+      color = ~ifelse(member_casual == "member", "red", "blue"),
+      stroke = TRUE, fillOpacity = 0
+  )%>%  
+  addCircleMarkers(
+      ~end_lng,
+      ~end_lat,
+      radius = 8,
+      color = ~ifelse(member_casual == "member", "red", "blue"),
+      stroke = TRUE, fillOpacity = 0
+  ) 
+```
+
+### History Ridings
+ - In addition to geography, we need to investigate how the usage has changed over time.
+ 
+#### Monthly trips trend
+
+```{r history_rides}
+library(lubridate)
+
+# add year_months column
+trips$year_month <- floor_date(trips$started_at, unit = "months")
+user_counts <- trips %>%
+  group_by(year_month, member_casual) %>%
+  summarize(n = n(), .groups = "drop")
+
+# plot the trend line
+ggplot(user_counts, aes(x = year_month, y = n, color = member_casual)) +
+  geom_line() +
+  labs(x = "Year-Month", y = "Number of Rides") +
+  scale_color_manual(values = c("blue", "red")) + 
+  theme_minimal()
+```
+  - The casual utilization are stable and slightly growing in the 3 years.
+  - The utilization appears strong seasonal volatility. Especially the casual user.
+  - The number of casual riding usually drop to very low level in winter. But in summer, casual riding are almost at the same number with member's riding.
+  - For casual user, annual membership may not be economic, and it should be split into monthly memberships.
+  
+### Riding Time Analysis
+```{r riding_time}
+# Create a sequence of hours
+hours <- seq(0, 23, by = 1)
+
+# Calculate the count of trips for each hour
+busy_times <- trips %>%
+  group_by(weekday, member_casual,  hour_start = floor(start_time), ) %>%
+  summarize(count = n(), .groups = "drop")
+
+# Create the line plot
+ggplot(busy_times, aes(x = hour_start, y = count, color = member_casual)) +
+  geom_line() +
+  labs(x = "Hour of Day", y = "Number of Trips") +
+  scale_color_manual(values = c("red", "blue")) +
+  facet_wrap(~weekday, nrow = 7) +
+  theme_minimal()
+```
+## SHARE AND ACT
+
+### Insights
+
+- Casual riders still make up a large percentage
+  - More than 40% ridings are made by casual riders.
+  - The portation of casual are stable and the number are slightly growing in the last 3 years.
+- Casual riders show clear evidence to perform leisure tourism. 
+  - They ride the similar distance in much longer time. 
+  - Their favorate stations spread along the beach.
+  - They strongly prefer riding in Weekend, and have the same time pattern with members.
+  - On weekday, they tend to ride around evening rush hours.
+  - Their number of rides is at the same or even higher level in Summer. But in winter, they ride much less.
+
+### Pattern and Strategies
+ 
+| Pattern            | Strategy                                          |
+|--------------------|---------------------------------------------------|
+| Inactive Winter    | Introduce **Monthly Membership**                   |
+| Slow riding        | Gifting **free distance** rathan than free time    |
+| Popular stations   | Conducting promotions at **top stations**           |
+| Favorite time      | Rebates for **weekend** and worday **evening peak** |
+| Purpose of leisure | **Relaxing** online and offline campaigns         |
+
+# CONCLUSION
+
+This is a really interesting dataset!    
+The data looks huge and radom, but the patterns are so clear.
+When I dig deeper, I found a lot of surprise，and then, I found much more clues that may lead to more insights.
+But I have to stop. To let my machine to have a rest, and to do the tons of assignments.
+
+I really enjoy the journey. Especially when I created a reusable function and saw it worked, I feel like have saved tons of time in the future.
+
+I hope you enjoy Cyclistic project as well.
+Thank you for reading.
 
 <style>
 .reusable_module {
