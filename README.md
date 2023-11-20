@@ -4,7 +4,7 @@
 ![Static Badge](https://img.shields.io/badge/kaggle-Jupyter_Notebook-yellow)
 ![Static Badge](https://img.shields.io/badge/Google-Analytics_Certificate-red)  
 
-<img src="/img/citybike.png"  width="300" height="300">
+<img src="/img/citybike.png"  width="300">
 
 ## Background
 
