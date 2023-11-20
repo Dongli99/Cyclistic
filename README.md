@@ -65,9 +65,9 @@ empty_value_monthly(tb, date_col, col1, col2)
 # Display distribution of empty value in cols with bar chart
 ```
 
-### Graphical Analysis
+### Geographical Analysis
 
-The project used graphical libraries to gain insights (see below).
+The project used geographical libraries to gain insights (see below).
 
 ## Processes
 
@@ -94,7 +94,7 @@ The project used graphical libraries to gain insights (see below).
 
 - For casual, more riding happened on weekends.
 
-### Insights from graphical analysis
+### Insights from geographical analysis
 
 ![Alt map1](/img/image-3.png)
 
